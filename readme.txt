@@ -2,7 +2,7 @@
 Contributors: dartiss, nutsmuggler
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 4.8.2
+Tested up to: 4.9
 Requires PHP: 5.3
 Stable tag: 2.3.2
 License: GPLv2 or later
@@ -35,7 +35,7 @@ Technical specification...
 
 Thanks to [Matej Nastran](http://matej.nastran.net/)'s [My plugins](http://wordpress.org/extend/plugins/my-plugins/), from which *Plugins list* was initially derived.
 
-For the latest known issue and planned enhancements, please see [my Bug Tracker site](https://artiss.uk/bugtracker/index.php?project=8 "Bug Tracker") site.
+Please visit the [Github page](https://github.com/dartiss/plugins-list "Github") for the latest code development, planned enhancements and known issues.
 
 == Instructions on use ==
 
