@@ -3,7 +3,7 @@
 Plugin Name: Plugins List
 Plugin URI: https://github.com/dartiss/plugins-list
 Description: Allows you to insert a list of the Wordpress plugins you are using into any post/page.
-Version: 2.3.3
+Version: 2.4
 Author: David Artiss
 Author URI: https://artiss.blog
 Text Domain: plugins-list
@@ -18,9 +18,9 @@ Text Domain: plugins-list
 * @since	2.1
 */
 
-define( 'plugins_list_version', '2.3.3' );
+define( 'plugins_list_version', '2.4' );
 
-define( 'APL_DEFAULT_PLUGIN_FORMAT', '<li>#LinkedTitle# by #LinkedAuthor#.</li>' );
+define( 'APL_DEFAULT_PLUGIN_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
 
 if ( !function_exists( 'get_plugins' ) ) { require_once ( ABSPATH . 'wp-admin/includes/plugin.php' ); }
 
@@ -142,7 +142,7 @@ function get_plugins_list( $format = '', $show_inactive = false, $cache = 1, $no
 
 	// Return the code, with HTML comments
 
-	return "\n<!-- Plugins List v" . plugins_list_version . " -->\n" . $output . "\n<!-- End of Plugins List -->\n";
+	return "\n<!-- Plugins List v" . plugins_list_version . " -->\n" . $output . "\n<!-- " . __( 'End of Plugins List', 'plugins-list' ) . " -->\n";
 
 }
 
@@ -268,10 +268,16 @@ function apl_format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 
 function apl_replace_tags( $plugin_data, $format, $nofollow, $target ) {
 
-	$format = strtr( $format, array( '{' => '<', '}' => '>' ) );
-
 	$format = strtr ( $format,
 						array(
+						'{{Title}}' => $plugin_data[ 'Title' ],
+						'{{PluginURI}}' => $plugin_data[ 'PluginURI' ],
+						'{{AuthorURI}}' => $plugin_data[ 'AuthorURI' ],
+						'{{Version}}' => $plugin_data[ 'Version' ],
+						'{{Description}}' => $plugin_data[ 'Description' ],
+						'{{Author}}' => $plugin_data[ 'Author' ],
+						'{{LinkedTitle}}' => "<a href='" . $plugin_data[ 'PluginURI' ] . "' title='" . $plugin_data[ 'Title' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Title' ] . "</a>",
+						'{{LinkedAuthor}}' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",
 						'#Title#' => $plugin_data[ 'Title' ],
 						'#PluginURI#' => $plugin_data[ 'PluginURI' ],
 						'#AuthorURI#' => $plugin_data[ 'AuthorURI' ],
@@ -279,7 +285,9 @@ function apl_replace_tags( $plugin_data, $format, $nofollow, $target ) {
 						'#Description#' => $plugin_data[ 'Description' ],
 						'#Author#' => $plugin_data[ 'Author' ],
 						'#LinkedTitle#' => "<a href='" . $plugin_data[ 'PluginURI' ] . "' title='" . $plugin_data[ 'Title' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Title' ] . "</a>",
-						'#LinkedAuthor#' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",
+						'#LinkedAuthor#' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",						
+						'{{' => '<', '}}' => '>',
+						'{' => '<', '}' => '>'
 						) );
 
 	return $format;
