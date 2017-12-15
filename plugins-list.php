@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Plugins List
-Plugin URI: https://wordpress.org/plugins/plugins-list/
+Plugin URI: https://github.com/dartiss/plugins-list
 Description: Allows you to insert a list of the Wordpress plugins you are using into any post/page.
-Version: 2.3.2
+Version: 2.3.3
 Author: David Artiss
 Author URI: https://artiss.blog
 Text Domain: plugins-list
@@ -18,7 +18,7 @@ Text Domain: plugins-list
 * @since	2.1
 */
 
-define( 'plugins_list_version', '2.3.1' );
+define( 'plugins_list_version', '2.3.3' );
 
 define( 'APL_DEFAULT_PLUGIN_FORMAT', '<li>#LinkedTitle# by #LinkedAuthor#.</li>' );
 
@@ -38,7 +38,12 @@ if ( !function_exists( 'get_plugins' ) ) { require_once ( ABSPATH . 'wp-admin/in
 
 function apl_set_plugin_meta( $links, $file ) {
 
-	if ( false !== strpos( $file, 'plugins-list.php' ) ) { $links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/plugins-list">' . __( 'Support', 'plugins-list' ) . '</a>' ) ); }
+	if ( false !== strpos( $file, 'plugins-list.php' ) ) {
+
+		$links = array_merge( $links, array( '<a href="https://github.com/dartiss/plugins-list">' . __( 'Github', 'plugins-list' ) . '</a>' ) );		
+
+		$links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/plugins-list">' . __( 'Support', 'plugins-list' ) . '</a>' ) );
+	}
 
 	return $links;
 }
@@ -202,7 +207,7 @@ function apl_get_plugin_data( $cache ) {
 
 	if ( !$plugins ) {
 		$plugins = get_plugins();
-		if ( ( '' != $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, 3600 * $cache ); }
+		if ( ( '' != $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, HOUR_IN_SECONDS * $cache ); }
 	}
 
 	return $plugins;
@@ -279,4 +284,3 @@ function apl_replace_tags( $plugin_data, $format, $nofollow, $target ) {
 
 	return $format;
 }
-?>
