@@ -14,7 +14,7 @@ Text Domain: plugins-list
 *
 * Main code - include various functions
 *
-* @package	Artiss-Plugins-List
+* @package	plugins-list
 * @since	2.1
 */
 

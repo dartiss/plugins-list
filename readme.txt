@@ -4,7 +4,7 @@ Tags: plugin, list, show, installed, display
 Requires at least: 4.6
 Tested up to: 4.9
 Requires PHP: 5.3
-Stable tag: 2.3.2
+Stable tag: 2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,9 +45,9 @@ To get a list of the plugins that are installed and activated in your website, i
 
 You can customise the output specifying the `format` argument and a number of pre-defined `tags`. Here's an example:
 
-`[plugins_list format="#LinkedTitle# - #LinkedAuthor#</br>"]`
+`[plugins_list format="{{LinkedTitle}} - {{LinkedAuthor}}</br>"]`
 
-The tags are: `#Title#`, `#PluginURI#`, `#Author#"` ,`#AuthorURI#`, `#Version#`, `#Description#`, `#LinkedTitle#`, `#LinkedAuthor#`.
+The tags are: `Title`, `PluginURI`, `Author` ,`AuthorURI`, `Version`, `Description`, `LinkedTitle`, `LinkedAuthor`. All are defined within double braces.
 
 If you want to list also the plug-ins you have installed but are not using, here's the formula:
 
@@ -65,23 +65,23 @@ You can also specify the link target too. For example...
 
 == Using HTML ==
 
-If you wish to put HTML in your format then you can. However, this can cause havoc in the Visual editor and even causes extra characters to be passed into the output (rogue paragraph tags, for instance). I therefore highly recommend that, if you wish to add HTML, use { and } instead of < and > around your HTML tags - this plugin will correct this before output but it means the visual editor doesn't try and interpret the HTML.
+If you wish to put HTML in your format then you can. However, this can cause havoc in the Visual editor and even causes extra characters to be passed into the output (rogue paragraph tags, for instance). I therefore highly recommend that, if you wish to add HTML, use double braces instead of < and > around your HTML tags - this plugin will correct this before output but it means the visual editor doesn't try and interpret the HTML.
 
 For example...
 
-`<ul>[plugins_list format="{li}#LinkedTitle# - #LinkedAuthor#{/li}"]</ul>`
+`<ul>[plugins_list format="{{li}}{{LinkedTitle}} - {{LinkedAuthor}{{/li}}"]</ul>`
 
 The characters will be corrected upon output and you will get a lovely, bulleted, un-ordered list as output.
 
 == Cache ==
 
-By default your plugin list will be cached for 1 hour, ensuring that performance is impacted as little as possible. Use the parameter `cache` to change the number of hours. Set this to false to switch off caching.
+By default your plugin list will be cached for 5 minutes, ensuring that performance is impacted as little as possible. Use the parameter `cache` to change the number of minutes. Set this to false to switch off caching.
 
 For example...
 
-`<ul>[plugins_list cache=24]</ul>`
+`<ul>[plugins_list cache=60]</ul>`
 
-This will cache for 24 hours. The following will switch the cache off...
+This will cache for 1 hour. The following will switch the cache off...
 
 `<ul>[plugins_list cache=false]</ul>`
 
@@ -89,25 +89,11 @@ This will cache for 24 hours. The following will switch the cache off...
 
 A shortcode also exists to allow you to display the number of plugins that you have. Simply add `[plugins_number]` to your post or page and it will return the number of active plugins.
 
-To display the number of active AND inactive plugins use `[plugins_number inactive=true]`.
+To display the number of active AND inactive plugins use `[plugins_number inactive=true]`. You can also display the number of inactive plugins by specifying `[plugins_number inactive=true active=false]`.
 
 As with the other shortcode results will be cached by default. To change the number of hours simply use the `cache` parameter. Set it to `false` to switch off caching. For example...
 
 `[plugins_number inactive=true cache=2]`
-
-== Function Calls ==
-
-If you wish to get the plugin data via a PHP function call (for example, to integrate it into your theme or add to your own plugin) then the following can be used..
-
-`<?php $list = get_plugins_list(  $format, $show_inactive, $cache, $nofollow, $target ); ?>`
-
-None of the parameters are required and are as per the shortcode.
-
-For getting the plugin numbers you can use the function...
-
-`<?php $number = get_plugin_number( $inactive, $cache ); ?>`
-
-Both function calls will return the appropriate text but not output it.
 
 == Reviews & Mentions ==
 
@@ -122,6 +108,12 @@ Plugins List can be found and installed via the Plugin menu within WordPress adm
 
 Voila! It's ready to go.
 
+== Frequently Asked Questions ==
+
+= You've changed from using hashes to double braces for tags - help! =
+
+Using double braces (i.e. {{ and {{) for templates is pretty standard so something I wanted to move towards. However, I don't want existing usage to break so I'm supporting both the old and new methods - however, I'm not documenting the old method so my hope is for people to move towards usage of double braces.
+
 == Screenshots ==
 
 1. An example of the list in use
@@ -129,6 +121,14 @@ Voila! It's ready to go.
 == Changelog ==
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
+
+= 2.4 =
+* Enhancement: Now uses the standard double braces for templates (and HTML as well)
+* Enhancement: Can now specify to list just inactive plugins
+* Enhancement: Now using a time constant instead of a hard-coded number
+* Enhancement: Added Github links to plugin meta
+* Maintenance: Changed caching from hours to minutes
+* Maintenance: Tidying up of code
 
 = 2.3.2 =
 * Maintenance: Updates to README
@@ -194,5 +194,5 @@ Voila! It's ready to go.
 
 == Upgrade Notice ==
 
-= 2.3.2 =
-* Assorted maintenance updates
+= 2.4 =
+* Minor enhancements, including a new template standard and the option to list just inactive plugins
