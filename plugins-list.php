@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Plugins List
-Plugin URI: https://wordpress.org/plugins/plugins-list/
+Plugin URI: https://github.com/dartiss/plugins-list
 Description: Allows you to insert a list of the Wordpress plugins you are using into any post/page.
-Version: 2.3.2
+Version: 2.4
 Author: David Artiss
 Author URI: https://artiss.blog
 Text Domain: plugins-list
@@ -14,13 +14,13 @@ Text Domain: plugins-list
 *
 * Main code - include various functions
 *
-* @package	Artiss-Plugins-List
+* @package	plugins-list
 * @since	2.1
 */
 
-define( 'plugins_list_version', '2.3.1' );
+define( 'PLUGINS_LIST_VERSION', '2.4' );
 
-define( 'APL_DEFAULT_PLUGIN_FORMAT', '<li>#LinkedTitle# by #LinkedAuthor#.</li>' );
+define( 'DEFAULT_PLUGIN_LIST_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
 
 if ( !function_exists( 'get_plugins' ) ) { require_once ( ABSPATH . 'wp-admin/includes/plugin.php' ); }
 
@@ -36,14 +36,19 @@ if ( !function_exists( 'get_plugins' ) ) { require_once ( ABSPATH . 'wp-admin/in
 * @return   string			Links, now with settings added
 */
 
-function apl_set_plugin_meta( $links, $file ) {
+function set_plugins_list_meta( $links, $file ) {
 
-	if ( false !== strpos( $file, 'plugins-list.php' ) ) { $links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/plugins-list">' . __( 'Support', 'plugins-list' ) . '</a>' ) ); }
+	if ( false !== strpos( $file, 'plugins-list.php' ) ) {
+
+		$links = array_merge( $links, array( '<a href="https://github.com/dartiss/plugins-list">' . __( 'Github', 'plugins-list' ) . '</a>' ) );		
+
+		$links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/plugins-list">' . __( 'Support', 'plugins-list' ) . '</a>' ) );
+	}
 
 	return $links;
 }
 
-add_filter( 'plugin_row_meta', 'apl_set_plugin_meta', 10, 2 );
+add_filter( 'plugin_row_meta', 'set_plugins_list_meta', 10, 2 );
 
 /**
 * Main Shortcode Function
@@ -58,16 +63,16 @@ add_filter( 'plugin_row_meta', 'apl_set_plugin_meta', 10, 2 );
 * @return   string              Output
 */
 
-function apl_plugins_list_shortcode( $paras ) {
+function plugins_list_shortcode( $paras ) {
 
-	extract( shortcode_atts( array( 'format' => '', 'show_inactive' => '', 'cache' => '', 'nofollow' => '', 'target' => '' ), $paras ) );
+	extract( shortcode_atts( array( 'format' => '', 'show_inactive' => '', 'show_active' => '', 'cache' => '', 'nofollow' => '', 'target' => '' ), $paras ) );
 
-	$output = get_plugins_list( $format, $show_inactive, $cache, $nofollow, $target );
+	$output = get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target );
 
 	return $output;
 }
 
-add_shortcode( 'plugins_list', 'apl_plugins_list_shortcode' );
+add_shortcode( 'plugins_list', 'plugins_list_shortcode' );
 
 /**
 * Number of plugins shortcode
@@ -82,16 +87,16 @@ add_shortcode( 'plugins_list', 'apl_plugins_list_shortcode' );
 * @return   string              Output
 */
 
-function apl_plugin_number_shortcode( $paras ) {
+function plugin_number_shortcode( $paras ) {
 
-	extract( shortcode_atts( array( 'inactive' => '', 'cache' => '' ), $paras ) );
+	extract( shortcode_atts( array( 'active' => 'true', 'inactive' => 'false', 'cache' => 5 ), $paras ) );
 
-	$output = get_plugin_number( $inactive, $cache );
+	$output = get_plugin_number( $active, $inactive, $cache );
 
 	return $output;
 }
 
-add_shortcode( 'plugins_number', 'apl_plugin_number_shortcode' );
+add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
 
 /**
 * Get Plugins List
@@ -100,29 +105,32 @@ add_shortcode( 'plugins_number', 'apl_plugin_number_shortcode' );
 *
 * @since	1.0
 *
-* @uses     apl_format_plugin_list  Format the plugin list
-* @uses		apl_get_plugin_data		Get the plugin data
+* @uses     format_plugin_list      Format the plugin list
+* @uses		get_plugin_list_data	Get the plugin data
 *
 * @param    string  $format         Requires format
 * @param    string  $show_inactive  Whether to format or not
+* @param    string  $show_active    Whether to show active or not
 * @param	string	$cache			Cache time
 * @param	string	$nofollow		Whether to add nofollow to link
 * @param	string	$target			Link target
 * @return   string                  Output
 */
 
-function get_plugins_list( $format = '', $show_inactive = false, $cache = 1, $nofollow = false, $target = '' ) {
+function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target ) {
 
-	if ( '' == $format ) { $format = APL_DEFAULT_PLUGIN_FORMAT; }
+	// Set default values
 
-	// Generate NOFOLLOW and TARGET text
-
+	if ( '' == $format ) { $format = DEFAULT_PLUGIN_LIST_FORMAT; }
+	if ( '' == $show_inactive ) { $show_inactive = 'false'; }
+	if ( '' == $show_active ) { $show_active = 'true'; }
+	if ( '' == $cache ) { $cache = 5; }			
 	if ( $nofollow ) { $nofollow = ' rel="nofollow"'; } else { $nofollow = ''; }
 	if ( '' != $target ) { $target = ' target="' . $target . '"'; } else { $target = ''; }
 
 	// Get plugin data
 
-	$plugins = apl_get_plugin_data( $cache );
+	$plugins = get_plugin_list_data( $cache );
 
 	// Extract each plugin and format the output
 
@@ -130,14 +138,15 @@ function get_plugins_list( $format = '', $show_inactive = false, $cache = 1, $no
 
 	foreach( $plugins as $plugin_file => $plugin_data ) {
 
-		if ( $show_inactive || is_plugin_active( $plugin_file ) )  {
-			$output .= apl_format_plugin_list( $plugin_data, $format, $nofollow, $target );
+		if ( ( is_plugin_active( $plugin_file ) && $show_active == 'true' ) or ( !is_plugin_active( $plugin_file ) && $show_inactive == 'true' ) ) {
+
+			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target );
 		}
 	}
 
 	// Return the code, with HTML comments
 
-	return "\n<!-- Plugins List v" . plugins_list_version . " -->\n" . $output . "\n<!-- End of Plugins List -->\n";
+	return "\n<!-- Plugins List v" . PLUGINS_LIST_VERSION . " -->\n" . $output . "\n<!-- " . __( 'End of Plugins List', 'plugins-list' ) . " -->\n";
 
 }
 
@@ -148,28 +157,30 @@ function get_plugins_list( $format = '', $show_inactive = false, $cache = 1, $no
 *
 * @since	2.2
 *
-* @uses     apl_get_plugin_data		Get the plugin data
+* @uses     get_plugin_list_data    Get the plugin data
 *
+* @param    string  $show_active    Whether to include active plugins or not
 * @param	string	$show_inactive	Whether to include inactive plugins or not
 * @param	string	$cache			Cache time
 * @return   string                  Plugin number
 */
 
-function get_plugin_number( $show_inactive = false, $cache = 1 ) {
+function get_plugin_number( $show_active, $show_inactive, $cache ) {
 
 	// Get plugin data
 
-	$plugins = apl_get_plugin_data( $cache );
+	$plugins = get_plugin_list_data( $cache );
 
 	// Get count
 
-	if ( $show_inactive ) {
+	if ( $show_inactive == 'true' && $show_active == 'true' ) {
 		$output = count( $plugins );
 	} else {
 		$output = 0;
 		foreach( $plugins as $plugin_file => $plugin_data ) {
 			if ( is_plugin_active( $plugin_file ) )  { $output++; }
 		}
+		if ( $show_inactive == 'true' ) { $output = count( $plugins ) - $output; }
 	}
 
 	return $output;
@@ -182,27 +193,27 @@ function get_plugin_number( $show_inactive = false, $cache = 1 ) {
 *
 * @since	2.2
 *
-* @uses     apl_format_plugin_list  Format the plugin list
+* @uses     format_plugin_list      Format the plugin list
 *
 * @param	string	$cache			Cache time
 * @return   string                  Plugin data
 */
 
-function apl_get_plugin_data( $cache ) {
+function get_plugin_list_data( $cache ) {
 
 	// Attempt to get plugin list from cache
 
 	if ( !$cache ) { $cache = 'no'; }
 
 	$plugins = false;
-	$cache_key = 'artiss_plugins_list';
+	$cache_key = 'plugins_list';
 	if ( is_numeric( $cache ) ) { $plugins = get_transient( $cache_key ); }
 
 	// If not using cache, generate a new list and cache that
 
 	if ( !$plugins ) {
 		$plugins = get_plugins();
-		if ( ( '' != $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, 3600 * $cache ); }
+		if ( ( '' != $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, MINUTE_IN_SECONDS * $cache ); }
 	}
 
 	return $plugins;
@@ -215,7 +226,7 @@ function apl_get_plugin_data( $cache ) {
 *
 * @since	1.0
 *
-* @uses     apl_replace_tags        Replace the tags
+* @uses     replace_plugin_list_tags  Replace the tags
 *
 * @param    string  $plugin_data    The plugin list
 * @param    string  $format         Format to use
@@ -224,7 +235,7 @@ function apl_get_plugin_data( $cache ) {
 * @return   string                  Output
 */
 
-function apl_format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
+function format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 
 	// Allowed tag
 
@@ -242,7 +253,7 @@ function apl_format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 
 	// Replace the tags
 
-	$format = apl_replace_tags( $plugin_data, $format, $nofollow, $target );
+	$format = replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target );
 
 	return $format;
 }
@@ -261,12 +272,18 @@ function apl_format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 * @return   string                  Output
 */
 
-function apl_replace_tags( $plugin_data, $format, $nofollow, $target ) {
-
-	$format = strtr( $format, array( '{' => '<', '}' => '>' ) );
+function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 
 	$format = strtr ( $format,
 						array(
+						'{{Title}}' => $plugin_data[ 'Title' ],
+						'{{PluginURI}}' => $plugin_data[ 'PluginURI' ],
+						'{{AuthorURI}}' => $plugin_data[ 'AuthorURI' ],
+						'{{Version}}' => $plugin_data[ 'Version' ],
+						'{{Description}}' => $plugin_data[ 'Description' ],
+						'{{Author}}' => $plugin_data[ 'Author' ],
+						'{{LinkedTitle}}' => "<a href='" . $plugin_data[ 'PluginURI' ] . "' title='" . $plugin_data[ 'Title' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Title' ] . "</a>",
+						'{{LinkedAuthor}}' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",
 						'#Title#' => $plugin_data[ 'Title' ],
 						'#PluginURI#' => $plugin_data[ 'PluginURI' ],
 						'#AuthorURI#' => $plugin_data[ 'AuthorURI' ],
@@ -274,9 +291,10 @@ function apl_replace_tags( $plugin_data, $format, $nofollow, $target ) {
 						'#Description#' => $plugin_data[ 'Description' ],
 						'#Author#' => $plugin_data[ 'Author' ],
 						'#LinkedTitle#' => "<a href='" . $plugin_data[ 'PluginURI' ] . "' title='" . $plugin_data[ 'Title' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Title' ] . "</a>",
-						'#LinkedAuthor#' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",
+						'#LinkedAuthor#' => "<a href='" . $plugin_data[ 'AuthorURI' ] . "' title='" . $plugin_data[ 'Author' ] . "'" . $nofollow . $target . ">" . $plugin_data[ 'Author' ] . "</a>",						
+						'{{' => '<', '}}' => '>',
+						'{' => '<', '}' => '>'
 						) );
 
 	return $format;
 }
-?>

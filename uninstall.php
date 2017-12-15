@@ -4,7 +4,7 @@
 *
 * Uninstall the plugin by removing any options from the database
 *
-* @package	Artiss-Plugins-List
+* @package	plugins-list
 * @since	2.2.1
 */
 
@@ -14,5 +14,7 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) { exit(); }
 
 // Delete cache
 
-delete_transient( 'artiss_plugins_list' );
+delete_transient( 'plugins_list' );
+
+delete_transient( 'artiss_plugins_list' ); // Previous version - kept to ensure this is housekept on older versions
 ?>
