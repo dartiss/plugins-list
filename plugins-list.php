@@ -3,7 +3,7 @@
 Plugin Name: Plugins List
 Plugin URI: https://github.com/dartiss/plugins-list
 Description: Allows you to insert a list of the Wordpress plugins you are using into any post/page.
-Version: 2.4
+Version: 2.4.1
 Author: David Artiss
 Author URI: https://artiss.blog
 Text Domain: plugins-list
@@ -18,7 +18,7 @@ Text Domain: plugins-list
 * @since	2.1
 */
 
-define( 'PLUGINS_LIST_VERSION', '2.4' );
+define( 'PLUGINS_LIST_VERSION', '2.4.1' );
 
 define( 'DEFAULT_PLUGIN_LIST_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
 
@@ -65,9 +65,9 @@ add_filter( 'plugin_row_meta', 'set_plugins_list_meta', 10, 2 );
 
 function plugins_list_shortcode( $paras ) {
 
-	extract( shortcode_atts( array( 'format' => '', 'show_inactive' => '', 'show_active' => '', 'cache' => '', 'nofollow' => '', 'target' => '' ), $paras ) );
+	$atts = shortcode_atts( array( 'format' => '', 'show_inactive' => '', 'show_active' => '', 'cache' => '', 'nofollow' => '', 'target' => '' ), $paras );
 
-	$output = get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target );
+	$output = get_plugins_list( $atts[ 'format' ], $atts[ 'show_inactive' ], $atts[ 'show_active' ], $atts[ 'cache' ], $atts[ 'nofollow' ], $atts[ 'target'] );
 
 	return $output;
 }
@@ -89,9 +89,9 @@ add_shortcode( 'plugins_list', 'plugins_list_shortcode' );
 
 function plugin_number_shortcode( $paras ) {
 
-	extract( shortcode_atts( array( 'active' => 'true', 'inactive' => 'false', 'cache' => 5 ), $paras ) );
+	$atts = shortcode_atts( array( 'active' => 'true', 'inactive' => 'false', 'cache' => 5 ), $paras );
 
-	$output = get_plugin_number( $active, $inactive, $cache );
+	$output = get_plugin_number( $atts[ 'active' ], $atts[ 'inactive' ], $atts[ 'cache' ] );
 
 	return $output;
 }
@@ -121,12 +121,12 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 
 	// Set default values
 
-	if ( '' == $format ) { $format = DEFAULT_PLUGIN_LIST_FORMAT; }
-	if ( '' == $show_inactive ) { $show_inactive = 'false'; }
-	if ( '' == $show_active ) { $show_active = 'true'; }
-	if ( '' == $cache ) { $cache = 5; }			
+	if ( '' === $format ) { $format = DEFAULT_PLUGIN_LIST_FORMAT; }
+	if ( '' === $show_inactive ) { $show_inactive = 'false'; }
+	if ( '' === $show_active ) { $show_active = 'true'; }
+	if ( '' === $cache ) { $cache = 5; }			
 	if ( $nofollow ) { $nofollow = ' rel="nofollow"'; } else { $nofollow = ''; }
-	if ( '' != $target ) { $target = ' target="' . $target . '"'; } else { $target = ''; }
+	if ( '' !== $target ) { $target = ' target="' . $target . '"'; } else { $target = ''; }
 
 	// Get plugin data
 
@@ -138,7 +138,7 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 
 	foreach( $plugins as $plugin_file => $plugin_data ) {
 
-		if ( ( is_plugin_active( $plugin_file ) && $show_active == 'true' ) or ( !is_plugin_active( $plugin_file ) && $show_inactive == 'true' ) ) {
+		if ( ( is_plugin_active( $plugin_file ) && $show_active === 'true' ) or ( !is_plugin_active( $plugin_file ) && $show_inactive === 'true' ) ) {
 
 			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target );
 		}
@@ -173,14 +173,14 @@ function get_plugin_number( $show_active, $show_inactive, $cache ) {
 
 	// Get count
 
-	if ( $show_inactive == 'true' && $show_active == 'true' ) {
+	if ( 'true' === $show_inactive && 'true' === $show_active ) {
 		$output = count( $plugins );
 	} else {
 		$output = 0;
-		foreach( $plugins as $plugin_file => $plugin_data ) {
+		foreach( $plugins as $plugin_file => $plugin_data ) { // @codingStandardsIgnoreLine -- require $plugin_data for array values but not doing anything with it
 			if ( is_plugin_active( $plugin_file ) )  { $output++; }
 		}
-		if ( $show_inactive == 'true' ) { $output = count( $plugins ) - $output; }
+		if ( 'true' === $show_inactive ) { $output = count( $plugins ) - $output; }
 	}
 
 	return $output;
@@ -213,7 +213,7 @@ function get_plugin_list_data( $cache ) {
 
 	if ( !$plugins ) {
 		$plugins = get_plugins();
-		if ( ( '' != $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, MINUTE_IN_SECONDS * $cache ); }
+		if ( ( '' !== $plugins ) && ( is_numeric( $cache ) ) ) { set_transient( $cache_key, $plugins, MINUTE_IN_SECONDS * $cache ); }
 	}
 
 	return $plugins;
@@ -239,17 +239,15 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 
 	// Allowed tag
 
-	$plugins_allowedtags1 = array( 'a' => array( 'href' => array(), 'title' => array() ), 'abbr' => array( 'title' => array() ), 'acronym' => array( 'title' => array() ), 'code' => array(), 'em' => array(), 'strong' => array() );
-
-	$plugins_allowedtags2 = array( 'abbr' => array( 'title' => array() ), 'acronym' => array( 'title' => array() ), 'code' => array(), 'em' => array(), 'strong' => array() );
+	$plugins_allowedtags = array( 'a' => array( 'href' => array(), 'title' => array() ), 'abbr' => array( 'title' => array() ), 'acronym' => array( 'title' => array() ), 'code' => array(), 'em' => array(), 'strong' => array() );
 
 	// Sanitize all displayed data
 
-	$plugin_data[ 'Title' ] = wp_kses( $plugin_data[ 'Title' ], $plugins_allowedtags1 );
-	$plugin_data[ 'PluginURI' ] = wp_kses( $plugin_data[ 'PluginURI' ], $plugins_allowedtags1 );
-	$plugin_data[ 'AuthorURI' ] = wp_kses( $plugin_data[ 'AuthorURI' ], $plugins_allowedtags1 );
-	$plugin_data[ 'Version' ] = wp_kses( $plugin_data[ 'Version' ], $plugins_allowedtags1 );
-	$plugin_data[ 'Author' ] = wp_kses( $plugin_data[ 'Author' ], $plugins_allowedtags1 );
+	$plugin_data[ 'Title' ] = wp_kses( $plugin_data[ 'Title' ], $plugins_allowedtags );
+	$plugin_data[ 'PluginURI' ] = wp_kses( $plugin_data[ 'PluginURI' ], $plugins_allowedtags );
+	$plugin_data[ 'AuthorURI' ] = wp_kses( $plugin_data[ 'AuthorURI' ], $plugins_allowedtags );
+	$plugin_data[ 'Version' ] = wp_kses( $plugin_data[ 'Version' ], $plugins_allowedtags );
+	$plugin_data[ 'Author' ] = wp_kses( $plugin_data[ 'Author' ], $plugins_allowedtags );
 
 	// Replace the tags
 
