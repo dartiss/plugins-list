@@ -17,4 +17,3 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) { exit(); }
 delete_transient( 'plugins_list' );
 
 delete_transient( 'artiss_plugins_list' ); // Previous version - kept to ensure this is housekept on older versions
-?>

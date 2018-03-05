@@ -2,9 +2,9 @@
 Contributors: dartiss, nutsmuggler
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 4.9
+Tested up to: 4.9.4
 Requires PHP: 5.3
-Stable tag: 2.4
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,7 @@ Technical specification...
 * Licensed under [GPLv2 (or later)](http://wordpress.org/about/gpl/ "GNU General Public License")
 * Designed for both single and multi-site installations
 * PHP7 compatible
+* Passes [WordPress.com VIP](https://vip.wordpress.com) coding standards and fully compatible with their platform
 * Fully internationalized, ready for translations. **If you would like to add a translation to this plugin then please head to our [Translating WordPress](https://translate.wordpress.org/projects/wp-plugins/plugins-list "Translating WordPress") page**
 * WCAG 2.0 Compliant at AA level
 
@@ -122,6 +123,9 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
 
+= 2.4.1 =
+* Enhancement: Code quality enhancements to bring it in line with WordPress.com VIP coding standards
+
 = 2.4 =
 * Enhancement: Now uses the standard double braces for templates (and HTML as well)
 * Enhancement: Can now specify to list just inactive plugins
@@ -194,5 +198,5 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 == Upgrade Notice ==
 
-= 2.4 =
-* Minor enhancements, including a new template standard and the option to list just inactive plugins
+= 2.4.1 =
+* Now fully compatible with the WordPress.com VIP platform
