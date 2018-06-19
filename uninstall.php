@@ -4,13 +4,14 @@
 *
 * Uninstall the plugin by removing any options from the database
 *
-* @package	plugins-list
-* @since	2.2.1
+* @package  plugins-list
+* @since    2.2.1
 */
 
 // If the uninstall was not called by WordPress, exit
 
-if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) { exit(); }
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit(); }
 
 // Delete cache
 
