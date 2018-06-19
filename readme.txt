@@ -2,9 +2,9 @@
 Contributors: dartiss, nutsmuggler
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 4.9.4
-Requires PHP: 5.3
-Stable tag: 2.4.1
+Tested up to: 4.9.6
+Requires PHP: 7.0
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,7 @@ Technical specification...
 * Licensed under [GPLv2 (or later)](http://wordpress.org/about/gpl/ "GNU General Public License")
 * Designed for both single and multi-site installations
 * PHP7 compatible
-* Passes [WordPress.com VIP](https://vip.wordpress.com) coding standards and fully compatible with their platform
+* Passes full [WordPress.com VIP](https://vip.wordpress.com) coding standards and fully compatible with their platform
 * Fully internationalized, ready for translations. **If you would like to add a translation to this plugin then please head to our [Translating WordPress](https://translate.wordpress.org/projects/wp-plugins/plugins-list "Translating WordPress") page**
 * WCAG 2.0 Compliant at AA level
 
@@ -63,6 +63,10 @@ By default links will be followed but you can make these "nofollow" by simply ad
 You can also specify the link target too. For example...
 
 `<ul>[plugins_list target="_blank"]</ul>`
+
+Finally, want so sort the output by author and not plugin name? Just use the parameter `by_author`. For example...
+
+`<ul>[plugins_list by_author=true]</ul>`
 
 == Using HTML ==
 
@@ -122,6 +126,10 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 == Changelog ==
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
+
+= 2.4.2 =
+* Enhancement: Because minimal VIP coding standards are not enough, it now passed the full-fat VIP standards as well
+* Enhancement: Can now sort the output by author
 
 = 2.4.1 =
 * Enhancement: Code quality enhancements to bring it in line with WordPress.com VIP coding standards
@@ -198,5 +206,5 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 == Upgrade Notice ==
 
-= 2.4.1 =
-* Now fully compatible with the WordPress.com VIP platform
+= 2.4.2 =
+* Even higher quality code and now with an option to sort by author
