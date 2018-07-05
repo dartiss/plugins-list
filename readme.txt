@@ -128,7 +128,8 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
 
 = 2.4.2 =
-* Enhancement: Because minimal VIP coding standards are not enough, it now passed the full-fat VIP standards as well
+* Maintenance: This release sees the minimum PHP version required, increased to PHP 7. If you're running on an older release, please continue to use 2.4.1 until you're able to upgrade your PHP.
+* Enhancement: Because minimal VIP coding standards are not enough, it now passes the full-fat VIP standards as well
 * Enhancement: Can now sort the output by author
 
 = 2.4.1 =
