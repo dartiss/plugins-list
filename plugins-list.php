@@ -172,7 +172,10 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 
 	if ( 'true' === $by_author ) {
 		usort( $plugins, function( $a, $b ) {
-			return strtoupper( $a['Author'] ) <=> strtoupper( $b['Author'] );
+			if ( strtoupper( $a['Author'] ) == strtoupper( $b['Author'] ) ) {
+				return 0;
+			}
+			return ( strtoupper( $a['Author'] ) < strtoupper( $b['Author'] ) ) ? -1 : 1;
 		});
 	}
 
