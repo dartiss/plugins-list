@@ -4,7 +4,7 @@ Tags: plugin, list, show, installed, display
 Requires at least: 4.6
 Tested up to: 4.9.6
 Requires PHP: 7.0
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,8 +127,12 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
 
+= 2.4.3 =
+* Enhancement: A PHP detection function has been added, so an error will be reported if the required level of PHP is not available
+* Bug: Now using `uasort` instead of `usort` to get around an issue with array keys. Thanks to [dgw](https://github.com/dgw)
+
 = 2.4.2 =
-* Maintenance: This release sees the minimum PHP version required, increased to PHP 7. If you're running on an older release, please continue to use 2.4.1 until you're able to upgrade your PHP.
+* Maintenance: This release sees the minimum PHP version required, increased to PHP 7. If you're running on an older release, please continue to use 2.4.1 until you're able to upgrade your PHP
 * Enhancement: Because minimal VIP coding standards are not enough, it now passes the full-fat VIP standards as well
 * Enhancement: Can now sort the output by author
 
@@ -207,5 +211,5 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 == Upgrade Notice ==
 
-= 2.4.2 =
-* Even higher quality code and now with an option to sort by author
+= 2.4.3 =
+* Bug fix

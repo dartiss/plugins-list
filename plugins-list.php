@@ -3,7 +3,7 @@
 Plugin Name: Plugins List
 Plugin URI: https://github.com/dartiss/plugins-list
 Description: Allows you to insert a list of the WordPress plugins you are using into any post/page.
-Version: 2.4.2
+Version: 2.4.3
 Author: David Artiss
 Author URI: https://artiss.blog
 Text Domain: plugins-list
@@ -18,12 +18,37 @@ Text Domain: plugins-list
 * @since    2.1
 */
 
-define( 'PLUGINS_LIST_VERSION', '2.4.2' );
+define( 'PLUGINS_LIST_VERSION', '2.4.3' );
 
 define( 'DEFAULT_PLUGIN_LIST_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
 
 if ( ! function_exists( 'get_plugins' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' ); }
+
+/**
+* Check PHP version
+*
+* Stop activation if using a version of PHP less than the required level
+*
+* @since    2.4.3
+*/
+
+function plugins_list_activate() {
+
+	$php = '7.0'; // Minimum PHP level required
+
+	/* translators: %1$s: required PHP version, %2$s: current PHP level */
+	$message = sprintf( __( 'The Plugins List plugin requires PHP version %1$s or greater but you are using version %2$s. The plugin has NOT been activated.', 'plugins-list' ), $php, PHP_VERSION );
+	$title   = __( 'Plugin Activation Error', 'plugins-list' );
+
+	if ( version_compare( PHP_VERSION, $php, '<' ) ) {
+		wp_die( esc_html( $message ), esc_html( $title ) );
+	} else {
+		return;
+	}
+}
+
+register_activation_hook( __FILE__, 'plugins_list_activate' );
 
 /**
 * Add meta to plugin details
@@ -171,7 +196,7 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 	// Sort the plugin array if required in author sequence
 
 	if ( 'true' === $by_author ) {
-		usort( $plugins, function( $a, $b ) {
+		uasort( $plugins, function( $a, $b ) {
 			return strtoupper( $a['Author'] ) <=> strtoupper( $b['Author'] );
 		});
 	}
