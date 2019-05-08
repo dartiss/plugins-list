@@ -74,7 +74,7 @@ If you wish to put HTML in your format then you can. However, this can cause hav
 
 For example...
 
-`<ul>[plugins_list format="{{li}}{{LinkedTitle}} - {{LinkedAuthor}{{/li}}"]</ul>`
+`<ul>[plugins_list format="{{li}}{{LinkedTitle}} - {{LinkedAuthor}}{{/li}}"]</ul>`
 
 The characters will be corrected upon output and you will get a lovely, bulleted, un-ordered list as output.
 
