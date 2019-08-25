@@ -38,8 +38,6 @@ Thanks to [Matej Nastran](http://matej.nastran.net/)'s [My plugins](http://wordp
 
 Please visit the [Github page](https://github.com/dartiss/plugins-list "Github") for the latest code development, planned enhancements and known issues.
 
-Icons made by [Freepik](https://www.flaticon.com/authors/freepik "Freepik") from [www.flaticon.co](https://www.flaticon.com/ "Flaticon") is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0 "Creative Commons BY 3.0").
-
 == Instructions on use ==
 
 To get a list of the plugins that are installed and activated in your website, insert the following into any post or page:
