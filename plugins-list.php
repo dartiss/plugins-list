@@ -23,7 +23,7 @@ define( 'PLUGINS_LIST_VERSION', '2.4.3' );
 define( 'DEFAULT_PLUGIN_LIST_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
 
 if ( ! function_exists( 'get_plugins' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/plugin.php' ); }
+	require_once ABSPATH . 'wp-admin/includes/plugin.php'; }
 
 /**
 * Check PHP version
@@ -100,7 +100,8 @@ function plugins_list_shortcode( $paras ) {
 			'nofollow'      => '',
 			'target'        => '',
 			'by_author'     => '',
-		), $paras
+		),
+		$paras
 	);
 
 	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'] );
@@ -130,7 +131,8 @@ function plugin_number_shortcode( $paras ) {
 			'active'   => 'true',
 			'inactive' => 'false',
 			'cache'    => 5,
-		), $paras
+		),
+		$paras
 	);
 
 	$output = get_plugin_number( $atts['active'], $atts['inactive'], $atts['cache'] );
@@ -196,9 +198,12 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 	// Sort the plugin array if required in author sequence
 
 	if ( 'true' === $by_author ) {
-		uasort( $plugins, function( $a, $b ) {
-			return strtoupper( $a['Author'] ) <=> strtoupper( $b['Author'] );
-		});
+		uasort(
+			$plugins,
+			function( $a, $b ) {
+				return strtoupper( $a['Author'] ) <=> strtoupper( $b['Author'] );
+			}
+		);
 	}
 
 	// Extract each plugin and format the output
@@ -207,7 +212,7 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 
 	foreach ( $plugins as $plugin_file => $plugin_data ) {
 
-		if ( ( is_plugin_active( $plugin_file ) && 'true' === $show_active ) or ( ! is_plugin_active( $plugin_file ) && 'true' === $show_inactive ) ) {
+		if ( ( is_plugin_active( $plugin_file ) && 'true' === $show_active ) || ( ! is_plugin_active( $plugin_file ) && 'true' === $show_inactive ) ) {
 
 			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target );
 		}
