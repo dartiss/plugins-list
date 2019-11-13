@@ -2,7 +2,7 @@
 Contributors: dartiss, nutsmuggler
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 5.2.2
+Tested up to: 5.3
 Requires PHP: 7.0
 Stable tag: 2.4.3
 License: GPLv2 or later
