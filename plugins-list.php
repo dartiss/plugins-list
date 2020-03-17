@@ -385,3 +385,29 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 
 	return $format;
 }
+
+/**
+* provide admin rest access to plugin list in json format
+*
+* @since    2.1
+* @return   object                  Outpupt
+*/
+
+if (!function_exists('ajax_admin_plugins_list')) {
+
+    function ajax_admin_plugins_list() {
+        $isadmin = user_can_access_admin_page();
+        if($isadmin){
+            $plugins = get_plugin_list_data();
+            $result = $plugins;
+        }else{
+            $result=array('result'=>'fail','msg'=>'user not permitted', 'data'=>[]);
+        }
+        header("Content-type: application/json");
+        echo json_encode($result);
+        exit;
+    }
+}
+
+// https://yourdomain.com/wp-admin?admin-ajax.php?action=pluginlist
+add_action('wp_ajax_pluginlist', 'ajax_admin_plugins_list');
