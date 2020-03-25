@@ -1,14 +1,15 @@
 === Plugins List ===
 Contributors: dartiss, nutsmuggler
+Donate link: https://artiss.blog/donate
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 7.0
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allows you to insert a list of the Wordpress plugins you are using into any post/page.
+🔌 Allows you to insert a list of the Wordpress plugins you are using into any post/page.
 
 == Description ==
 
@@ -24,15 +25,6 @@ Key features include...
 * Display inactive plugins as well as active plugins if you wish
 * Output is cached to provide a super-quick response
 * A separate shortcode allows you to display how many plugins you have!
-
-Technical specification...
-
-* Licensed under [GPLv2 (or later)](http://wordpress.org/about/gpl/ "GNU General Public License")
-* Designed for both single and multi-site installations
-* PHP7 compatible
-* Passes full [WordPress.com VIP](https://vip.wordpress.com) coding standards and fully compatible with their platform
-* Fully internationalized, ready for translations. **If you would like to add a translation to this plugin then please head to our [Translating WordPress](https://translate.wordpress.org/projects/wp-plugins/plugins-list "Translating WordPress") page**
-* WCAG 2.0 Compliant at AA level
 
 Thanks to [Matej Nastran](http://matej.nastran.net/)'s [My plugins](http://wordpress.org/extend/plugins/my-plugins/), from which *Plugins list* was initially derived.
 
@@ -74,7 +66,7 @@ If you wish to put HTML in your format then you can. However, this can cause hav
 
 For example...
 
-`<ul>[plugins_list format="{{li}}{{LinkedTitle}} - {{LinkedAuthor}{{/li}}"]</ul>`
+`<ul>[plugins_list format="{{li}}{{LinkedTitle}} - {{LinkedAuthor}}{{/li}}"]</ul>`
 
 The characters will be corrected upon output and you will get a lovely, bulleted, un-ordered list as output.
 
@@ -126,6 +118,12 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 == Changelog ==
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
+
+= 2.4.4 =
+* Enhancement: To reduce the plugin's output footprint, I've removed the HTML comments - they were useful for the rare case of debugging but adding un-needed content to each page load for the 99.99999% rest of the time
+* Enhancement: Now follows the best code standards - not just the official WordPress standards but also the strictest WordPress VIP standards too
+* Enhancement: Added donation links back in and generally improved the plugin meta
+* Maintenance: Removed PHP version check as this is now covered in the plugin README
 
 = 2.4.3 =
 * Enhancement: A PHP detection function has been added, so an error will be reported if the required level of PHP is not available
@@ -211,5 +209,5 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 == Upgrade Notice ==
 
-= 2.4.3 =
-* Bug fix
+= 2.4.4 =
+* Nothing major - just a tidy up of the code
