@@ -3,7 +3,7 @@ Contributors: dartiss, nutsmuggler
 Donate link: https://artiss.blog/donate
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 5.4
+Tested up to: 5.6
 Requires PHP: 7.0
 Stable tag: 2.4.4
 License: GPLv2 or later
@@ -28,7 +28,9 @@ Key features include...
 
 Thanks to [Matej Nastran](http://matej.nastran.net/)'s [My plugins](http://wordpress.org/extend/plugins/my-plugins/), from which *Plugins list* was initially derived.
 
-Please visit the [Github page](https://github.com/dartiss/plugins-list "Github") for the latest code development, planned enhancements and known issues.
+Iconography is courtesy of the very talented [Janki Rathod](https://www.fiverr.com/jankirathore) ♥️
+
+👉 Please visit the [Github page](https://github.com/dartiss/plugins-list "Github") for the latest code development, planned enhancements and known issues 👈
 
 == Instructions on use ==
 
@@ -117,7 +119,7 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 == Changelog ==
 
-[Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
+I use semantic versioning, with the first release being 1.0.
 
 = 2.4.4 =
 * Enhancement: To reduce the plugin's output footprint, I've removed the HTML comments - they were useful for the rare case of debugging but adding un-needed content to each page load for the 99.99999% rest of the time
