@@ -1,6 +1,6 @@
 # Plugins List
 
-This is a simple Wordpress plugin aimed at giving credit where credit is due.
+<img src="https://ps.w.org/plugins-list/assets/icon-128x128.png" align="left">This is a simple Wordpress plugin aimed at giving credit where credit is due.
 
 The plugin inserts an XHTML list into any post/page through a shortcode. If you're into customization, you can specify a format argument and indicate the exact output you are after. There's also an option to display inactive plugins as well.
 
@@ -14,3 +14,7 @@ Features include...
 * A separate shortcode allows you to display how many plugins you have!
 
 Thanks to [Matej Nastran](http://matej.nastran.net/)'s [My plugins](http://wordpress.org/extend/plugins/my-plugins/), from which *Plugins list* was initially derived.
+
+Iconography is courtesy of the very talented [Janki Rathod](https://www.fiverr.com/jankirathore) ♥️
+
+<p align="right"><a href="https://wordpress.org/plugins/plugins-list/"><img src="https://img.shields.io/wordpress/plugin/dt/plugins-list?label=wp.org%20downloads&style=for-the-badge">&nbsp;<img src="https://img.shields.io/wordpress/plugin/stars/plugins-list?color=orange&style=for-the-badge"></a></p>
