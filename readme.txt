@@ -5,7 +5,7 @@ Tags: plugin, list, show, installed, display
 Requires at least: 4.6
 Tested up to: 6.1
 Requires PHP: 7.4
-Stable tag: 2.4.4
+Stable tag: 2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-This is a simple Wordpress plugin aimed at giving credit where credit is due.
+This is a simple community Wordpress plugin aimed at giving credit where credit is due.
 
 The plugin inserts an XHTML list into any post/page through a shortcode. If you're into customization, you can specify a format argument and indicate the exact output you are after. There's also an option to display inactive plugins as well.
 
@@ -23,6 +23,7 @@ Key features include...
 * Template tags are available for automatically linked items as well as simple text
 * Choose from a number of pieces of plugin data to be output
 * Display inactive plugins as well as active plugins if you wish
+* Automatically limit long descriptions to specific lengths, and even remove emojis from the output
 * Output is cached to provide a super-quick response
 * A separate shortcode allows you to display how many plugins you have!
 
@@ -32,7 +33,7 @@ Iconography is courtesy of the very talented [Janki Rathod](https://www.fiverr.c
 
 👉 Please visit the [Github page](https://github.com/dartiss/plugins-list "Github") for the latest code development, planned enhancements and known issues 👈
 
-== Instructions on use ==
+== Getting Started ==
 
 To get a list of the plugins that are installed and activated in your website, insert the following into any post or page:
 
@@ -40,27 +41,20 @@ To get a list of the plugins that are installed and activated in your website, i
 
 You can customise the output specifying the `format` argument and a number of pre-defined `tags`. Here's an example:
 
-`[plugins_list format="{{LinkedTitle}} - {{LinkedAuthor}}</br>"]`
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}"]`
 
-The tags are: `Title`, `PluginURI`, `Author` ,`AuthorURI`, `Version`, `Description`, `LinkedTitle`, `LinkedAuthor`. All are defined within double braces.
+The tags are as follows, all defined within double braces...
 
-If you want to list also the plug-ins you have installed but are not using, here's the formula:
-
-`<ul>[plugins_list show_inactive=true]</ul>`
+* `Title` - the plugin title
+* `PluginURI` - the URL of the plugin
+* `Author` - the plugin author
+* `AuthorURI` - the author's URL
+* `Version` - plugin version number
+* `Description` - the plugin description
+* `LinkedTitle` - the title but automatically linked to the corresponding URL
+* `LinkedAuthor` - the author, linking to their profile
 
 The plugins list can be freely styled with css, just place any *class* or *id* attribute on the `format` string, or on the elements surrounding it.
-
-By default links will be followed but you can make these "nofollow" by simply adding the parameter of `nofollow=true`. For example...
-
-`<ul>[plugins_list nofollow=true]</ul>`
-
-You can also specify the link target too. For example...
-
-`<ul>[plugins_list target="_blank"]</ul>`
-
-Finally, want so sort the output by author and not plugin name? Just use the parameter `by_author`. For example...
-
-`<ul>[plugins_list by_author=true]</ul>`
 
 == Using HTML ==
 
@@ -72,27 +66,85 @@ For example...
 
 The characters will be corrected upon output and you will get a lovely, bulleted, un-ordered list as output.
 
-== Cache ==
+If you're using the block editor and need to wrap HTML around the outside of the short code, please see the details further below on the best way to do this.
+
+== Additional Parameters ==
+
+**Inactive Plugins**
+
+If you want to list also the plug-ins you have installed but are not using, here's the formula:
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" show_inactive=true]`
+
+**Link Targets & No Follow**
+
+By default links will be followed but you can make these "nofollow" by simply adding the parameter of `nofollow=true`. For example...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" nofollow=true]`
+
+You can also specify the link target too. For example...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" target="_blank"]`
+
+**Truncate the Description**
+
+Two parameters exist to truncate the description, so it doesn't get too long unwieldy. You can specify a maximum number of words or a maximum number of characters using `words` or `chars`. Here's an example of each...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" words=20]`
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" chars=80]`
+
+You shouldn't do this but if you specify both then the shortest one will be used.
+
+By default, if a truncation occurs, ellipsis will be added to the end. However, you can change this by using the `end` parameter and specifying your own ending. For example...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" chars=80 end=" [More]"]`
+
+**Remove Emoji**
+
+If you want to remove emoji from the description, use the `emoji` parameter to achieve this. By default this is `true` but set to `false` to have them removed. For example...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" emoji=false]`
+
+**Sort by Author**
+
+Want so sort the output by author and not plugin name? Just use the parameter `by_author`. For example...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" by_author=true]`
+
+**Cache**
 
 By default your plugin list will be cached for 5 minutes, ensuring that performance is impacted as little as possible. Use the parameter `cache` to change the number of minutes. Set this to false to switch off caching.
 
 For example...
 
-`<ul>[plugins_list cache=60]</ul>`
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" cache=60]`
 
 This will cache for 1 hour. The following will switch the cache off...
 
-`<ul>[plugins_list cache=false]</ul>`
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" cache=false]`
+
+== Using with the block editor ==
+
+You can insert shortcodes directly into the block editor without an issue and it will be automatically added to a shortcode block. However, if you need to wrap HTML around it then this will cause issues. The solution here is to add a shortcode block first and then add the whole line into that. The HTML then works just fine.
 
 == Plugin Count ==
 
 A shortcode also exists to allow you to display the number of plugins that you have. Simply add `[plugins_number]` to your post or page and it will return the number of active plugins.
 
-To display the number of active AND inactive plugins use `[plugins_number inactive=true]`. You can also display the number of inactive plugins by specifying `[plugins_number inactive=true active=false]`.
+To display the number of active AND inactive plugins use...
 
-As with the other shortcode results will be cached by default. To change the number of hours simply use the `cache` parameter. Set it to `false` to switch off caching. For example...
+`[plugins_number inactive=true]`
 
-`[plugins_number inactive=true cache=2]`
+You can also display the number of inactive plugins by specifying...
+
+`[plugins_number inactive=true active=false]`
+
+As with the other shortcode results will be cached by default. To change the number of minutes simply use the `cache` parameter. Set it to `false` to switch off caching. For example...
+
+`[plugins_number inactive=true cache=120]`
+
+This will set the cache to 2 hours.
 
 == Reviews & Mentions ==
 
@@ -120,6 +172,15 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 == Changelog ==
 
 I use semantic versioning, with the first release being 1.0.
+
+= 2.5 =
+* Enhancement: New header, inc. GPL information, added to the plugin. A bit boring, I know, but a change is a change.
+* Enhancement: New parameters added allowing you to limit the description length to either a certain number of words or characters. The latter is intelligent, not chopping the sentence off in the middle of a wo
+* Enhancement: Extra spacing and HTML is now stripped from the plugin description by default. HTML in a plugin description? I'm looking at you Jetpack...
+* Enhancement: A new parameter allows you to have emoji removed from the description as well. Nothing wrong with emojis, mind you, but they're not for everyone
+* Enhancement: To support the length truncation, I've also added a new parameter to that you can specify what happens at the end of the sentence when this happens
+* Enhancement: Finally, I updated this README with improved formatting and better examples. Oh, and I better explain how to use this plugin with the block editor too.
+* Maintenance: Tested under PHP 8.2. No changes required for this, but I can confirm that it works without issue /wipes sweat from brow/
 
 = 2.4.4 =
 * Enhancement: To reduce the plugin's output footprint, I've removed the HTML comments - they were useful for the rare case of debugging but adding un-needed content to each page load for the 99.99999% rest of the time
@@ -211,5 +272,5 @@ I use semantic versioning, with the first release being 1.0.
 
 == Upgrade Notice ==
 
-= 2.4.4 =
-* Nothing major - just a tidy up of the code
+= 2.5 =
+* Lots of new options for controlling the output of the plugin descriptions

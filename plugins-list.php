@@ -1,14 +1,29 @@
 <?php
 /**
-Plugin Name: Plugins List
-Plugin URI: https://github.com/dartiss/plugins-list
-Description: 🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
-Version: 2.4.4
-Author: David Artiss
-Author URI: https://artiss.blog
-Text Domain: plugins-list
-
-@package plugins-list
+ * Plugins List
+ *
+ * @package           plugins-list
+ * @author            David Artiss
+ * @license           GPL-2.0-or-later
+ *
+ * Plugin Name:       Plugins List
+ * Plugin URI:        https://wordpress.org/plugins/plugins-list/
+ * Description:       🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
+ * Version:           2.5
+ * Requires at least: 4.6
+ * Requires PHP:      7.4
+ * Author:            David Artiss
+ * Author URI:        https://artiss.blog
+ * Text Domain:       plugins-list
+ * License:           GPL v2 or later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2, as published by the Free Software Foundation. You may NOT assume
+ * that you can use any other version of the GPL.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 define( 'DEFAULT_PLUGIN_LIST_FORMAT', '<li>{{LinkedTitle}} by {{LinkedAuthor}}.</li>' );
@@ -64,11 +79,15 @@ function plugins_list_shortcode( $paras ) {
 			'nofollow'      => '',
 			'target'        => '',
 			'by_author'     => '',
+			'chars'         => '',
+			'words'         => '',
+			'emoji'         => '',
+			'end'           => '',
 		),
 		$paras
 	);
 
-	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'] );
+	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
 
 	return $output;
 }
@@ -118,9 +137,13 @@ add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
  * @param    string $nofollow       Whether to add nofollow to link.
  * @param    string $target         Link target.
  * @param    string $by_author      Which author.
+ * @param    string $characters     Maximum characters for description.
+ * @param    string $words          Maximum words for description.
+ * @param    string $emoji          True or false, whether to strip emoji from description.
+ * @param    string $end            When the description is truncated, what to place at the end of the string.
  * @return   string                 Output.
  */
-function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target, $by_author ) {
+function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target, $by_author, $characters, $words, $emoji, $end ) {
 
 	// Set default values.
 
@@ -149,6 +172,14 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 	if ( '' !== $by_author ) {
 		$by_author = 'true';
 	}
+	if ( 'false' == $emoji ) {
+		$emoji = false;
+	} else {
+		$emoji = true;
+	}
+	if ( '' == $end ) {
+		$end = '&#8230;';
+	}
 
 	// Get plugin data.
 
@@ -173,7 +204,7 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 
 		if ( ( is_plugin_active( $plugin_file ) && 'true' === $show_active ) || ( ! is_plugin_active( $plugin_file ) && 'true' === $show_inactive ) ) {
 
-			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target );
+			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end );
 		}
 	}
 
@@ -265,9 +296,13 @@ function get_plugin_list_data( $cache ) {
  * @param    string $format         Format to use.
  * @param    string $nofollow       Nofollow text.
  * @param    string $target         Target text.
+ * @param    string $characters     Maximum characters for description.
+ * @param    string $words          Maximum words for description.
+ * @param    string $emoji          True or false, whether to strip emoji from description.
+ * @param    string $end            When the description is truncated, what to place at the end of the string.
  * @return   string                 Output.
  */
-function format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
+function format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end ) {
 
 	// Allowed tag.
 
@@ -290,6 +325,50 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target ) {
 	$plugin_data['AuthorURI'] = wp_kses( $plugin_data['AuthorURI'], $plugins_allowedtags );
 	$plugin_data['Version']   = wp_kses( $plugin_data['Version'], $plugins_allowedtags );
 	$plugin_data['Author']    = wp_kses( $plugin_data['Author'], $plugins_allowedtags );
+
+	// Strip emoji, HTML and unnecessary space from the description.
+	if ( false == $emoji ) {
+		$plugin_data['Description'] = remove_emoji_from_plugin_desc( $plugin_data['Description'] );
+	}
+	$plugin_data['Description'] = strip_spaces_from_plugin_desc( wp_strip_all_tags( $plugin_data['Description'] ) );
+
+	// Truncate the description, if required.
+
+	if ( '' != $characters || '' != $words ) {
+
+		// Use WordPress function to truncate description at a set number of words (ellipsis added automatically).
+
+		if ( '' != $words ) {
+			$word_limited               = wp_trim_words( $plugin_data['Description'], $words, $end );
+			$plugin_data['Description'] = $word_limited;
+		}
+
+		// Manually truncate description to a set number of characters. This is done cleanly, however, by doing so to
+		// the previous space. Then an ellipsis is added.
+
+		if ( '' != $characters ) {
+			$character_limited = $plugin_data['Description'];
+			// Make sure the description is greater than the required length.
+			if ( strlen( $character_limited ) > $characters ) {
+				$space = strrpos( substr( $character_limited, 0, $characters + 1 ), ' ' );
+
+				if ( false == $space ) {
+					// If there is no space before the truncation length, just truncate.
+					$character_limited = substr( $character_limited, 0, $characters );
+				} else {
+					// If there is a space within the truncated area, trim to that.
+					$character_limited = substr( $character_limited, 0, $space );
+				}
+				$plugin_data['Description'] = rtrim( $character_limited ) . $end;
+			}
+		}
+
+		// If both words and character limits are used, take whichever results in the shortest result.
+
+		if ( ( '' != $characters && '' != $words ) && ( $word_limited < $character_limited ) ) {
+			$plugin_data['Description'] = $word_limited;
+		}
+	}
 
 	// Replace the tags.
 
@@ -338,4 +417,48 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 	);
 
 	return $format;
+}
+
+/**
+ * Remove emoji
+ *
+ * Function to strip emoji from the plugin description.
+ *
+ * @param    string $description    The plugin description.
+ * @return   string                 Stripped description.
+ */
+function remove_emoji_from_plugin_desc( $description ) {
+
+	$symbols = "\x{1F100}-\x{1F1FF}" // Enclosed Alphanumeric Supplement.
+		. "\x{1F300}-\x{1F5FF}"      // Miscellaneous Symbols and Pictographs.
+		. "\x{1F600}-\x{1F64F}"      // Emoticons.
+		. "\x{1F680}-\x{1F6FF}"      // Transport And Map Symbols.
+		. "\x{1F900}-\x{1F9FF}"      // Supplemental Symbols and Pictographs.
+		. "\x{2600}-\x{26FF}"        // Miscellaneous Symbols.
+		. "\x{2700}-\x{27BF}";       // Dingbats.
+
+	$description = preg_replace( '/[' . $symbols . ']+/u', '', $description );
+
+	return $description;
+}
+
+/**
+ * Strip spaces
+ *
+ * Function to strip extra spaces from the plugin description.
+ *
+ * @param    string $description    The plugin description.
+ * @return   string                 Stripped description.
+ */
+function strip_spaces_from_plugin_desc( $description ) {
+
+	$continue = true;
+	while ( true === $continue ) {
+		$replace = str_replace( '  ', ' ', $description );
+		if ( $replace == $description ) {
+			$continue = false;
+		}
+		$description = $replace;
+	}
+	return trim( $description );
 }
