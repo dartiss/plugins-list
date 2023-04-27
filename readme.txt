@@ -3,9 +3,9 @@ Contributors: dartiss, nutsmuggler
 Donate link: https://artiss.blog/donate
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 2.5
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -165,6 +165,12 @@ Voila! It's ready to go.
 
 Using double braces (i.e. {{ and {{) for templates is pretty standard so something I wanted to move towards. However, I don't want existing usage to break so I'm supporting both the old and new methods - however, I'm not documenting the old method so my hope is for people to move towards usage of double braces.
 
+= I'm adding an HTML tag to the format parameter and it's not appearing =
+
+For your security, not all HTML tags are allowed - we've limited this to any that are for the purposed of text formatting (inc. bullet points) and tables.
+
+The full of allowed tags are: <a>, <b>, <bdo>, <big>, <blockquote>, <br>, <caption>, <center>, <cite>, <code>, <col>, <colgroup>, <dd>, <del>, <dfn>, <div>, <dl>, <dt>, <em>, <fieldset>, <figcaption>, <figure>, <font>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <hr>, <i>, <img>, <ins>, <kbd>, <label>, <legend>, <li>, <link>, <mark>, <meter>, <ol>, <p>, <pre>, <q>, <s>, <samp>, <small>, <span>, <strike>, <strong>, <style>, <sub>, <sup>, <table>, <tbody>, <td>, <th>, <thead>, <tr>, <u>, <ul>, <var> and <wbr>.
+
 == Screenshots ==
 
 1. An example of the list in use
@@ -172,6 +178,9 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 == Changelog ==
 
 I use semantic versioning, with the first release being 1.0.
+
+= 2.5.1 =
+* Enhancement: Strip HTML tags from the format parameter, unless it's for formatting. This is to ensure no XSS vulnerabilities can occur. Thanks to [Yuki Haruma](https://patchstack.com/database/researcher/3d15e16d-f25d-4426-8c6b-20ef9ec4c7f2) and [Patchstack](https://patchstack.com/) for reporting this to me.
 
 = 2.5 =
 * Enhancement: New header, inc. GPL information, added to the plugin. A bit boring, I know, but a change is a change.
@@ -272,5 +281,5 @@ I use semantic versioning, with the first release being 1.0.
 
 == Upgrade Notice ==
 
-= 2.5 =
-* Lots of new options for controlling the output of the plugin descriptions
+= 2.5.1 =
+* Fixed a potential XSS vulnerability (malicious scripts could be added by anything with editor access or greater)
