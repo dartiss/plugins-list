@@ -9,7 +9,7 @@
  * Plugin Name:       Plugins List
  * Plugin URI:        https://wordpress.org/plugins/plugins-list/
  * Description:       🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
- * Version:           2.5
+ * Version:           2.5.1
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            David Artiss
@@ -86,6 +86,8 @@ function plugins_list_shortcode( $paras ) {
 		),
 		$paras
 	);
+
+	// Pass the shortcode parameters onto a function to generate the plugins list.
 
 	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
 
@@ -415,6 +417,76 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 			'}'                => '>',
 		)
 	);
+
+	// Remove all HTML tags other than those used for formatting.
+
+	$allowed_tags = array(
+		'a'          => array(),
+		'b'          => array(),
+		'bdo'        => array(),
+		'big'        => array(),
+		'blockquote' => array(),
+		'br'         => array(),
+		'caption'    => array(),
+		'center'     => array(),
+		'cite'       => array(),
+		'code'       => array(),
+		'col'        => array(),
+		'colgroup'   => array(),
+		'dd'         => array(),
+		'del'        => array(),
+		'dfn'        => array(),
+		'div'        => array(),
+		'dl'         => array(),
+		'dt'         => array(),
+		'em'         => array(),
+		'fieldset'   => array(),
+		'figcaption' => array(),
+		'figure'     => array(),
+		'font'       => array(),
+		'h1'         => array(),
+		'h2'         => array(),
+		'h3'         => array(),
+		'h4'         => array(),
+		'h5'         => array(),
+		'h6'         => array(),
+		'hr'         => array(),
+		'i'          => array(),
+		'img'        => array(),
+		'ins'        => array(),
+		'kbd'        => array(),
+		'label'      => array(),
+		'legend'     => array(),
+		'li'         => array(),
+		'link'       => array(),
+		'mark'       => array(),
+		'meter'      => array(),
+		'ol'         => array(),
+		'p'          => array(),
+		'pre'        => array(),
+		'q'          => array(),
+		's'          => array(),
+		'samp'       => array(),
+		'small'      => array(),
+		'span'       => array(),
+		'strike'     => array(),
+		'strong'     => array(),
+		'style'      => array(),
+		'sub'        => array(),
+		'sup'        => array(),
+		'table'      => array(),
+		'tbody'      => array(),
+		'td'         => array(),
+		'th'         => array(),
+		'thead'      => array(),
+		'tr'         => array(),
+		'u'          => array(),
+		'ul'         => array(),
+		'var'        => array(),
+		'wbr'        => array(),
+	);
+
+	$format = wp_kses( $format, $allowed_tags );
 
 	return $format;
 }
