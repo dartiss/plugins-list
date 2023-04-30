@@ -5,7 +5,7 @@ Tags: plugin, list, show, installed, display
 Requires at least: 4.6
 Tested up to: 6.2
 Requires PHP: 7.4
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,7 +169,7 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 
 For your security, not all HTML tags are allowed - we've limited this to any that are for the purposed of text formatting (inc. bullet points) and tables.
 
-The full of allowed tags are: <a>, <b>, <bdo>, <big>, <blockquote>, <br>, <caption>, <center>, <cite>, <code>, <col>, <colgroup>, <dd>, <del>, <dfn>, <div>, <dl>, <dt>, <em>, <fieldset>, <figcaption>, <figure>, <font>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <hr>, <i>, <img>, <ins>, <kbd>, <label>, <legend>, <li>, <link>, <mark>, <meter>, <ol>, <p>, <pre>, <q>, <s>, <samp>, <small>, <span>, <strike>, <strong>, <style>, <sub>, <sup>, <table>, <tbody>, <td>, <th>, <thead>, <tr>, <u>, <ul>, <var> and <wbr>.
+The full of allowed tags are: <a>, <b>, <big>, <blockquote>, <br>, <caption>, <center>, <cite>, <code>, <col>, <colgroup>, <div>,  <em>, <font>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <hr>, <i>, <img>, <li>, <ol>, <p>, <pre>, <q>, <s>, <small>, <span>, <strike>, <strong>, <style>, <sub>, <sup>, <table>, <td>, <th>, <tr>, <u> and <ul>.
 
 == Screenshots ==
 
@@ -178,6 +178,9 @@ The full of allowed tags are: <a>, <b>, <bdo>, <big>, <blockquote>, <br>, <capti
 == Changelog ==
 
 I use semantic versioning, with the first release being 1.0.
+
+= 2.5.2 =
+* Bug: What can I say? I certainly made the plugin secure in the last release. Mainly by stopping things from working. Sorry. Hopefully that's now fixed now. I've also taken the opportunity to review which HTML tags I'm allowing - the full list is in the FAQ.
 
 = 2.5.1 =
 * Enhancement: Strip HTML tags from the format parameter, unless it's for formatting. This is to ensure no XSS vulnerabilities can occur. Thanks to [Yuki Haruma](https://patchstack.com/database/researcher/3d15e16d-f25d-4426-8c6b-20ef9ec4c7f2) and [Patchstack](https://patchstack.com/) for reporting this to me.
@@ -281,5 +284,5 @@ I use semantic versioning, with the first release being 1.0.
 
 == Upgrade Notice ==
 
-= 2.5.1 =
-* Fixed a potential XSS vulnerability (malicious scripts could be added by anything with editor access or greater)
+= 2.5.2 =
+* Fixed a bug introduced in 2.5.1 which, amongst other things, stopped links from working
