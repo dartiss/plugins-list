@@ -9,7 +9,7 @@
  * Plugin Name:       Plugins List
  * Plugin URI:        https://wordpress.org/plugins/plugins-list/
  * Description:       🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
- * Version:           2.5.1
+ * Version:           2.5.2
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            David Artiss
@@ -421,69 +421,180 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 	// Remove all HTML tags other than those used for formatting.
 
 	$allowed_tags = array(
-		'a'          => array(),
+		'a'          => array(
+			'href'     => array(),
+			'hreflang' => array(),
+			'rel'      => array(),
+			'target'   => array(),
+			'type'     => array(),
+			'class'    => array(),
+			'style'    => array(),
+		),
 		'b'          => array(),
-		'bdo'        => array(),
 		'big'        => array(),
-		'blockquote' => array(),
+		'blockquote' => array(
+			'cite'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
 		'br'         => array(),
 		'caption'    => array(),
 		'center'     => array(),
 		'cite'       => array(),
-		'code'       => array(),
-		'col'        => array(),
-		'colgroup'   => array(),
-		'dd'         => array(),
-		'del'        => array(),
-		'dfn'        => array(),
-		'div'        => array(),
-		'dl'         => array(),
-		'dt'         => array(),
-		'em'         => array(),
-		'fieldset'   => array(),
-		'figcaption' => array(),
-		'figure'     => array(),
-		'font'       => array(),
-		'h1'         => array(),
-		'h2'         => array(),
-		'h3'         => array(),
-		'h4'         => array(),
-		'h5'         => array(),
-		'h6'         => array(),
-		'hr'         => array(),
-		'i'          => array(),
-		'img'        => array(),
-		'ins'        => array(),
-		'kbd'        => array(),
-		'label'      => array(),
-		'legend'     => array(),
-		'li'         => array(),
-		'link'       => array(),
-		'mark'       => array(),
-		'meter'      => array(),
-		'ol'         => array(),
-		'p'          => array(),
-		'pre'        => array(),
-		'q'          => array(),
-		's'          => array(),
-		'samp'       => array(),
-		'small'      => array(),
-		'span'       => array(),
-		'strike'     => array(),
-		'strong'     => array(),
-		'style'      => array(),
-		'sub'        => array(),
-		'sup'        => array(),
-		'table'      => array(),
-		'tbody'      => array(),
-		'td'         => array(),
-		'th'         => array(),
-		'thead'      => array(),
-		'tr'         => array(),
-		'u'          => array(),
-		'ul'         => array(),
-		'var'        => array(),
-		'wbr'        => array(),
+		'code'       => array(
+			'pre'   => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'col'        => array(
+			'span'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'colgroup'   => array(
+			'span'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'div'        => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'em'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'font'       => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h1'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h2'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h3'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h4'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h5'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'h6'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'hr'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'i'          => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'img'        => array(
+			'src'   => array(),
+			'alt'   => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'li'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'ol'         => array(
+			'start' => array(),
+			'type'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'p'          => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'pre'        => array(
+			'code'  => array(),
+			'samp'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'q'          => array(
+			'cite'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		's'          => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'small'      => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'span'       => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'strike'     => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'strong'     => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'style'      => array(
+			'type'  => array(),
+			'class' => array(),
+			'style' => array(),
+		),
+		'sub'        => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'sup'        => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'table'      => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'td'         => array(
+			'colspan' => array(),
+			'headers' => array(),
+			'rowspan' => array(),
+			'class'   => array(),
+			'style'   => array(),
+		),
+		'th'         => array(
+			'colspan' => array(),
+			'headers' => array(),
+			'rowspan' => array(),
+			'scope'   => array(),
+			'class'   => array(),
+			'style'   => array(),
+		),
+		'tr'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'u'          => array(
+			'class' => array(),
+			'style' => array(),
+		),
+		'ul'         => array(
+			'class' => array(),
+			'style' => array(),
+		),
 	);
 
 	$format = wp_kses( $format, $allowed_tags );
