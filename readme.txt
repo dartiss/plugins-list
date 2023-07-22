@@ -3,7 +3,7 @@ Contributors: dartiss, nutsmuggler
 Donate link: https://artiss.blog/donate
 Tags: plugin, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 6.2
+Tested up to: 6.3
 Requires PHP: 7.4
 Stable tag: 2.5.2
 License: GPLv2 or later
