@@ -303,5 +303,5 @@ I use semantic versioning, with the first release being 1.0.
 
 == Upgrade Notice ==
 
-= 2.5.2 =
-* Fixed a bug introduced in 2.5.1 which, amongst other things, stopped links from working
+= 2.6 =
+* Assorted small enhancements
