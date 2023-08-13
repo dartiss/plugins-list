@@ -9,7 +9,7 @@
  * Plugin Name:       Plugins List
  * Plugin URI:        https://wordpress.org/plugins/plugins-list/
  * Description:       🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
- * Version:           2.5.2
+ * Version:           2.6
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            David Artiss
@@ -75,6 +75,7 @@ function plugins_list_shortcode( $paras ) {
 			'format'        => '',
 			'show_inactive' => '',
 			'show_active'   => '',
+			'show_recent'   => '',
 			'cache'         => '',
 			'nofollow'      => '',
 			'target'        => '',
@@ -89,7 +90,7 @@ function plugins_list_shortcode( $paras ) {
 
 	// Pass the shortcode parameters onto a function to generate the plugins list.
 
-	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
+	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['show_recent'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
 
 	return $output;
 }
@@ -135,6 +136,7 @@ add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
  * @param    string $format         Requires format.
  * @param    string $show_inactive  Whether to format or not.
  * @param    string $show_active    Whether to show active or not.
+ * @param    string $show_recent    Whether to show recenty active or not.
  * @param    string $cache          Cache time.
  * @param    string $nofollow       Whether to add nofollow to link.
  * @param    string $target         Link target.
@@ -145,7 +147,7 @@ add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
  * @param    string $end            When the description is truncated, what to place at the end of the string.
  * @return   string                 Output.
  */
-function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofollow, $target, $by_author, $characters, $words, $emoji, $end ) {
+function get_plugins_list( $format, $show_inactive, $show_active, $show_recent, $cache, $nofollow, $target, $by_author, $characters, $words, $emoji, $end ) {
 
 	// Set default values.
 
@@ -157,6 +159,9 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 	}
 	if ( '' === $show_active ) {
 		$show_active = 'true';
+	}
+	if ( '' === $show_recent ) {
+		$show_recent = 'true';
 	}
 	if ( '' === $cache ) {
 		$cache = 5;
@@ -198,15 +203,39 @@ function get_plugins_list( $format, $show_inactive, $show_active, $cache, $nofol
 		);
 	}
 
+	// Get array of recently activate plugins.
+
+	if ( is_network_admin() ) {
+		$recently_activated = get_site_option( 'recently_activated', array() );
+	} else {
+		$recently_activated = get_option( 'recently_activated', array() );
+	}
+
 	// Extract each plugin and format the output.
 
 	$output = '';
 
 	foreach ( $plugins as $plugin_file => $plugin_data ) {
 
-		if ( ( is_plugin_active( $plugin_file ) && 'true' === $show_active ) || ( ! is_plugin_active( $plugin_file ) && 'true' === $show_inactive ) ) {
+		// Work out whether plugin is active or not.
 
-			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end );
+		$plugin_active = false;
+		if ( is_plugin_active( $plugin_file ) ) {
+			$plugin_active = true;
+		}
+
+		// Was this recently active?
+
+		$recently_active = false;
+		if ( is_array( $recently_activated ) && array_key_exists( $plugin_file, $recently_activated ) ) {
+			$recently_active = true;
+		}
+
+		// Depending on whhat was requested, format the current plugin for output.
+
+		if ( ( $recently_active && 'true' === $show_recent ) || ( $plugin_active && 'true' === $show_active ) || ( ! $plugin_active && 'true' === $show_inactive ) ) {
+
+			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active );
 		}
 	}
 
@@ -302,9 +331,10 @@ function get_plugin_list_data( $cache ) {
  * @param    string $words          Maximum words for description.
  * @param    string $emoji          True or false, whether to strip emoji from description.
  * @param    string $end            When the description is truncated, what to place at the end of the string.
+ * @param    string $plugin_active  True or false, whether the plugin is active or not.
  * @return   string                 Output.
  */
-function format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end ) {
+function format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active ) {
 
 	// Allowed tag.
 
@@ -322,13 +352,24 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target, $charact
 
 	// Sanitize all displayed data.
 
-	$plugin_data['Title']     = wp_kses( $plugin_data['Title'], $plugins_allowedtags );
-	$plugin_data['PluginURI'] = wp_kses( $plugin_data['PluginURI'], $plugins_allowedtags );
-	$plugin_data['AuthorURI'] = wp_kses( $plugin_data['AuthorURI'], $plugins_allowedtags );
-	$plugin_data['Version']   = wp_kses( $plugin_data['Version'], $plugins_allowedtags );
-	$plugin_data['Author']    = wp_kses( $plugin_data['Author'], $plugins_allowedtags );
+	$plugin_data['Title']       = wp_kses( $plugin_data['Title'], $plugins_allowedtags );
+	$plugin_data['PluginURI']   = wp_kses( $plugin_data['PluginURI'], $plugins_allowedtags );
+	$plugin_data['AuthorURI']   = wp_kses( $plugin_data['AuthorURI'], $plugins_allowedtags );
+	$plugin_data['Version']     = wp_kses( $plugin_data['Version'], $plugins_allowedtags );
+	$plugin_data['Author']      = wp_kses( $plugin_data['Author'], $plugins_allowedtags );
+	$plugin_data['RequiresWP']  = wp_kses( $plugin_data['RequiresWP'], $plugins_allowedtags );
+	$plugin_data['RequiresPHP'] = wp_kses( $plugin_data['RequiresPHP'], $plugins_allowedtags );
+
+	// Get plugin activity status.
+
+	if ( $plugin_active ) {
+		$plugin_data['Active'] = __( 'Active', 'plugins-list' );
+	} else {
+		$plugin_data['Active'] = __( 'Inactive', 'plugins-list' );
+	}
 
 	// Strip emoji, HTML and unnecessary space from the description.
+
 	if ( false == $emoji ) {
 		$plugin_data['Description'] = remove_emoji_from_plugin_desc( $plugin_data['Description'] );
 	}
@@ -401,6 +442,9 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 			'{{Version}}'      => $plugin_data['Version'],
 			'{{Description}}'  => $plugin_data['Description'],
 			'{{Author}}'       => $plugin_data['Author'],
+			'{{RequiresWP}}'   => $plugin_data['RequiresWP'],
+			'{{RequiresPHP}}'  => $plugin_data['RequiresPHP'],
+			'{{Active}}'       => $plugin_data['Active'],
 			'{{LinkedTitle}}'  => "<a href='" . $plugin_data['PluginURI'] . "' title='" . $plugin_data['Title'] . "'" . $nofollow . $target . '>' . $plugin_data['Title'] . '</a>',
 			'{{LinkedAuthor}}' => "<a href='" . $plugin_data['AuthorURI'] . "' title='" . $plugin_data['Author'] . "'" . $nofollow . $target . '>' . $plugin_data['Author'] . '</a>',
 			'#Title#'          => $plugin_data['Title'],
@@ -409,6 +453,9 @@ function replace_plugin_list_tags( $plugin_data, $format, $nofollow, $target ) {
 			'#Version#'        => $plugin_data['Version'],
 			'#Description#'    => $plugin_data['Description'],
 			'#Author#'         => $plugin_data['Author'],
+			'#RequiresWP#'     => $plugin_data['RequiresWP'],
+			'#RequiresPHP#'    => $plugin_data['RequiresPHP'],
+			'#Active#'         => $plugin_data['Active'],
 			'#LinkedTitle#'    => "<a href='" . $plugin_data['PluginURI'] . "' title='" . $plugin_data['Title'] . "'" . $nofollow . $target . '>' . $plugin_data['Title'] . '</a>',
 			'#LinkedAuthor#'   => "<a href='" . $plugin_data['AuthorURI'] . "' title='" . $plugin_data['Author'] . "'" . $nofollow . $target . '>' . $plugin_data['Author'] . '</a>',
 			'{{'               => '<',

@@ -5,7 +5,7 @@ Tags: plugin, list, show, installed, display
 Requires at least: 4.6
 Tested up to: 6.3
 Requires PHP: 7.4
-Stable tag: 2.5.2
+Stable tag: 2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,8 +51,11 @@ The tags are as follows, all defined within double braces...
 * `AuthorURI` - the author's URL
 * `Version` - plugin version number
 * `Description` - the plugin description
+* `RequiresWP` - the minimum required level of WordPress
+* `RequiresPHP` - the minimum required level of PHP
 * `LinkedTitle` - the title but automatically linked to the corresponding URL
 * `LinkedAuthor` - the author, linking to their profile
+* `Active` - shows 'Active' or 'Inactive', depending on the status of the plugin
 
 The plugins list can be freely styled with css, just place any *class* or *id* attribute on the `format` string, or on the elements surrounding it.
 
@@ -70,11 +73,21 @@ If you're using the block editor and need to wrap HTML around the outside of the
 
 == Additional Parameters ==
 
-**Inactive Plugins**
+**Active & Inactive Plugins**
 
-If you want to list also the plug-ins you have installed but are not using, here's the formula:
+By default, only active plugins are shown, but by using the `show_active`, `show_inactive` and `show_recent` parameters you can change this.
+
+For example, this will show both active and inactive...
 
 `[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" show_inactive=true]`
+
+If you wanted to show just inactive, you'd put..
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" show_inactive=true show_active=false]`
+
+If you wanted to show just plugins that are inactive but were recently acive, you'd put...
+
+`[plugins_list format="{{LinkedTitle}} ({{LinkedAuthor}}) - {{Description}}{{br/}}" show_inactive=false show_active=false show_recent=true]`
 
 **Link Targets & No Follow**
 
@@ -178,6 +191,12 @@ The full of allowed tags are: <a>, <b>, <big>, <blockquote>, <br>, <caption>, <c
 == Changelog ==
 
 I use semantic versioning, with the first release being 1.0.
+
+= 2.6 =
+* Enhancement: Added a new tag named `Active` that allows you to display whether the plugin is, well, active or not
+* Enhancement: Added tags to display the "Required PHP" and "Required WordPress" details
+* Enhancement: Back in 2.4 I added the ability to turn off the display of active plugins, to completement the paramter for inactive plugins. However, I forgot to document it, so I've now done that
+* Enhancement: Added new parameter `show_recent`, which allows you to decide whether to show recently active plugins
 
 = 2.5.2 =
 * Bug: What can I say? I certainly made the plugin secure in the last release. Mainly by stopping things from working. Sorry. Hopefully that's now fixed now. I've also taken the opportunity to review which HTML tags I'm allowing - the full list is in the FAQ.
