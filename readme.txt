@@ -1,11 +1,11 @@
 === Plugins List ===
 Contributors: dartiss, nutsmuggler
 Donate link: https://artiss.blog/donate
-Tags: plugin, list, show, installed, display
+Tags: plugins, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 2.6
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -192,6 +192,10 @@ The full of allowed tags are: <a>, <b>, <big>, <blockquote>, <br>, <caption>, <c
 
 I use semantic versioning, with the first release being 1.0.
 
+= 2.6.1 =
+* Enhancement: Code quality improvements made - passes PHPCS for WordPress and WordPress VIP sniffs
+* Enhancement: Added unique prefixes to all of the function names
+
 = 2.6 =
 * Enhancement: Added a new tag named `Active` that allows you to display whether the plugin is, well, active or not
 * Enhancement: Added tags to display the "Required PHP" and "Required WordPress" details
@@ -303,5 +307,5 @@ I use semantic versioning, with the first release being 1.0.
 
 == Upgrade Notice ==
 
-= 2.6 =
-* Assorted small enhancements
+= 2.6.1 =
+* Code quality improvements
