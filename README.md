@@ -1,6 +1,6 @@
 # Plugins List
 
-<img src="https://ps.w.org/plugins-list/assets/icon-128x128.png" align="left">This is a simple community Wordpress plugin aimed at giving credit where credit is due.
+<img src="https://ps.w.org/plugins-list/assets/icon.svg" width=128px align="left" style="padding-right: 20px">This is a simple community Wordpress plugin aimed at giving credit where credit is due.
 
 The plugin inserts an XHTML list into any post/page through a shortcode. If you're into customization, you can specify a format argument and indicate the exact output you are after. There's also an option to display inactive plugins as well.
 

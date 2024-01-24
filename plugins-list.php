@@ -9,7 +9,7 @@
  * Plugin Name:       Plugins List
  * Plugin URI:        https://wordpress.org/plugins/plugins-list/
  * Description:       🔌 Allows you to insert a list of the WordPress plugins you are using into any post/page.
- * Version:           2.6
+ * Version:           2.6.1
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            David Artiss
@@ -40,7 +40,7 @@ if ( ! function_exists( 'get_plugins' ) ) {
  * @param    string $file   File in use.
  * @return   string         Links, now with settings added.
  */
-function set_plugins_list_meta( $links, $file ) {
+function pll_set_plugins_meta( $links, $file ) {
 
 	if ( false !== strpos( $file, 'plugins-list.php' ) ) {
 
@@ -56,19 +56,19 @@ function set_plugins_list_meta( $links, $file ) {
 	return $links;
 }
 
-add_filter( 'plugin_row_meta', 'set_plugins_list_meta', 10, 2 );
+add_filter( 'plugin_row_meta', 'pll_set_plugins_meta', 10, 2 );
 
 /**
  * Main Shortcode Function
  *
  * Extract shortcode parameters and call main function to output results
  *
- * @uses     get_plugins_list    Get the list of plugins
+ * @uses     pll_get_plugins_list    Get the list of plugins
  *
- * @param    string $paras  Shortcode parameters.
- * @return   stri           Output.
+ * @param    string $paras           Shortcode parameters.
+ * @return   string                  Output.
  */
-function plugins_list_shortcode( $paras ) {
+function pll_add_shortcode( $paras ) {
 
 	$atts = shortcode_atts(
 		array(
@@ -90,24 +90,24 @@ function plugins_list_shortcode( $paras ) {
 
 	// Pass the shortcode parameters onto a function to generate the plugins list.
 
-	$output = get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['show_recent'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
+	$output = pll_get_plugins_list( $atts['format'], $atts['show_inactive'], $atts['show_active'], $atts['show_recent'], $atts['cache'], $atts['nofollow'], $atts['target'], $atts['by_author'], $atts['chars'], $atts['words'], $atts['emoji'], $atts['end'] );
 
 	return $output;
 }
 
-add_shortcode( 'plugins_list', 'plugins_list_shortcode' );
+add_shortcode( 'plugins_list', 'pll_add_shortcode' );
 
 /**
  * Number of plugins shortcode
  *
  * Shortcode to return number of plugins
  *
- * @uses     get_plugin_number   Get the number of plugins
+ * @uses     pll_get_plugin_number   Get the number of plugins
  *
- * @param    string $paras  Shortcode parameters.
- * @return   string         Output.
+ * @param    string $paras           Shortcode parameters.
+ * @return   string                  Output.
  */
-function plugin_number_shortcode( $paras ) {
+function pll_add_number_shortcode( $paras ) {
 
 	$atts = shortcode_atts(
 		array(
@@ -118,20 +118,20 @@ function plugin_number_shortcode( $paras ) {
 		$paras
 	);
 
-	$output = get_plugin_number( $atts['active'], $atts['inactive'], $atts['cache'] );
+	$output = pll_get_plugin_number( $atts['active'], $atts['inactive'], $atts['cache'] );
 
 	return $output;
 }
 
-add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
+add_shortcode( 'plugins_number', 'add_add_number_shortcode' );
 
 /**
  * Get Plugins List
  *
  * Get list of plugins and, optionally, format them
  *
- * @uses     format_plugin_list      Format the plugin list
- * @uses     get_plugin_list_data    Get the plugin data
+ * @uses     pll_format_plugin_list Format the plugin list
+ * @uses     pll_get_data           Get the plugin data
  *
  * @param    string $format         Requires format.
  * @param    string $show_inactive  Whether to format or not.
@@ -147,7 +147,7 @@ add_shortcode( 'plugins_number', 'plugin_number_shortcode' );
  * @param    string $end            When the description is truncated, what to place at the end of the string.
  * @return   string                 Output.
  */
-function get_plugins_list( $format, $show_inactive, $show_active, $show_recent, $cache, $nofollow, $target, $by_author, $characters, $words, $emoji, $end ) {
+function pll_get_plugins_list( $format, $show_inactive, $show_active, $show_recent, $cache, $nofollow, $target, $by_author, $characters, $words, $emoji, $end ) {
 
 	// Set default values.
 
@@ -179,25 +179,25 @@ function get_plugins_list( $format, $show_inactive, $show_active, $show_recent, 
 	if ( '' !== $by_author ) {
 		$by_author = 'true';
 	}
-	if ( 'false' == $emoji ) {
+	if ( 'false' === $emoji ) {
 		$emoji = false;
 	} else {
 		$emoji = true;
 	}
-	if ( '' == $end ) {
+	if ( '' === $end ) {
 		$end = '&#8230;';
 	}
 
 	// Get plugin data.
 
-	$plugins = get_plugin_list_data( $cache );
+	$plugins = pll_get_data( $cache );
 
 	// Sort the plugin array if required in author sequence.
 
 	if ( 'true' === $by_author ) {
 		uasort(
 			$plugins,
-			function( $a, $b ) {
+			function ( $a, $b ) {
 				return strtoupper( $a['Author'] ) <=> strtoupper( $b['Author'] );
 			}
 		);
@@ -235,14 +235,13 @@ function get_plugins_list( $format, $show_inactive, $show_active, $show_recent, 
 
 		if ( ( $recently_active && 'true' === $show_recent ) || ( $plugin_active && 'true' === $show_active ) || ( ! $plugin_active && 'true' === $show_inactive ) ) {
 
-			$output .= format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active );
+			$output .= pll_format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active );
 		}
 	}
 
 	// Return the code, with HTML comments.
 
 	return "\n" . $output . "\n";
-
 }
 
 /**
@@ -252,18 +251,18 @@ function get_plugins_list( $format, $show_inactive, $show_active, $show_recent, 
  *
  * @since    2.2
  *
- * @uses     get_plugin_list_data    Get the plugin data
+ * @uses     pll_get_data           Get the plugin data
  *
  * @param    string $show_active    Whether to include active plugins or not.
  * @param    string $show_inactive  Whether to include inactive plugins or not.
  * @param    string $cache          Cache time.
- * @return   string                  Plugin number.
+ * @return   string                 Plugin number.
  */
-function get_plugin_number( $show_active, $show_inactive, $cache ) {
+function pll_get_plugin_number( $show_active, $show_inactive, $cache ) {
 
 	// Get plugin data.
 
-	$plugins = get_plugin_list_data( $cache );
+	$plugins = pll_get_data( $cache );
 
 	// Get count.
 
@@ -273,7 +272,7 @@ function get_plugin_number( $show_active, $show_inactive, $cache ) {
 		$output = 0;
 		foreach( $plugins as $plugin_file => $plugin_data ) { // @codingStandardsIgnoreLine -- require $plugin_data for array values but not doing anything with it
 			if ( is_plugin_active( $plugin_file ) ) {
-				$output++;
+				++$output;
 			}
 		}
 		if ( 'true' === $show_inactive ) {
@@ -288,12 +287,12 @@ function get_plugin_number( $show_active, $show_inactive, $cache ) {
  *
  * Get plugin data and cache it
  *
- * @uses     format_plugin_list      Format the plugin list.
+ * @uses     pll_format_plugin_list  Format the plugin list.
  *
  * @param    string $cache           Cache time.
  * @return   string                  Plugin data.
  */
-function get_plugin_list_data( $cache ) {
+function pll_get_data( $cache ) {
 
 	// Attempt to get plugin list from cache.
 
@@ -323,18 +322,18 @@ function get_plugin_list_data( $cache ) {
  *
  * @uses     replace_plugin_list_tags  Replace the tags
  *
- * @param    string $plugin_data    The plugin list.
- * @param    string $format         Format to use.
- * @param    string $nofollow       Nofollow text.
- * @param    string $target         Target text.
- * @param    string $characters     Maximum characters for description.
- * @param    string $words          Maximum words for description.
- * @param    string $emoji          True or false, whether to strip emoji from description.
- * @param    string $end            When the description is truncated, what to place at the end of the string.
- * @param    string $plugin_active  True or false, whether the plugin is active or not.
- * @return   string                 Output.
+ * @param    string $plugin_data       The plugin list.
+ * @param    string $format            Format to use.
+ * @param    string $nofollow          Nofollow text.
+ * @param    string $target            Target text.
+ * @param    string $characters        Maximum characters for description.
+ * @param    string $words             Maximum words for description.
+ * @param    string $emoji             True or false, whether to strip emoji from description.
+ * @param    string $end               When the description is truncated, what to place at the end of the string.
+ * @param    string $plugin_active     True or false, whether the plugin is active or not.
+ * @return   string                    Output.
  */
-function format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active ) {
+function pll_format_plugin_list( $plugin_data, $format, $nofollow, $target, $characters, $words, $emoji, $end, $plugin_active ) {
 
 	// Allowed tag.
 
@@ -370,18 +369,18 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target, $charact
 
 	// Strip emoji, HTML and unnecessary space from the description.
 
-	if ( false == $emoji ) {
+	if ( false === $emoji ) {
 		$plugin_data['Description'] = remove_emoji_from_plugin_desc( $plugin_data['Description'] );
 	}
 	$plugin_data['Description'] = strip_spaces_from_plugin_desc( wp_strip_all_tags( $plugin_data['Description'] ) );
 
 	// Truncate the description, if required.
 
-	if ( '' != $characters || '' != $words ) {
+	if ( '' !== $characters || '' !== $words ) {
 
 		// Use WordPress function to truncate description at a set number of words (ellipsis added automatically).
 
-		if ( '' != $words ) {
+		if ( '' !== $words ) {
 			$word_limited               = wp_trim_words( $plugin_data['Description'], $words, $end );
 			$plugin_data['Description'] = $word_limited;
 		}
@@ -389,13 +388,13 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target, $charact
 		// Manually truncate description to a set number of characters. This is done cleanly, however, by doing so to
 		// the previous space. Then an ellipsis is added.
 
-		if ( '' != $characters ) {
+		if ( '' !== $characters ) {
 			$character_limited = $plugin_data['Description'];
 			// Make sure the description is greater than the required length.
 			if ( strlen( $character_limited ) > $characters ) {
 				$space = strrpos( substr( $character_limited, 0, $characters + 1 ), ' ' );
 
-				if ( false == $space ) {
+				if ( false === $space ) {
 					// If there is no space before the truncation length, just truncate.
 					$character_limited = substr( $character_limited, 0, $characters );
 				} else {
@@ -408,7 +407,7 @@ function format_plugin_list( $plugin_data, $format, $nofollow, $target, $charact
 
 		// If both words and character limits are used, take whichever results in the shortest result.
 
-		if ( ( '' != $characters && '' != $words ) && ( $word_limited < $character_limited ) ) {
+		if ( ( '' !== $characters && '' !== $words ) && ( $word_limited < $character_limited ) ) {
 			$plugin_data['Description'] = $word_limited;
 		}
 	}
@@ -685,7 +684,7 @@ function strip_spaces_from_plugin_desc( $description ) {
 	$continue = true;
 	while ( true === $continue ) {
 		$replace = str_replace( '  ', ' ', $description );
-		if ( $replace == $description ) {
+		if ( $replace === $description ) {
 			$continue = false;
 		}
 		$description = $replace;
