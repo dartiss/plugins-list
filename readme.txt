@@ -3,7 +3,7 @@ Contributors: dartiss, nutsmuggler
 Donate link: https://artiss.blog/donate
 Tags: plugins, list, show, installed, display
 Requires at least: 4.6
-Tested up to: 6.5
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 2.7
 License: GPLv2 or later
@@ -183,6 +183,10 @@ Using double braces (i.e. {{ and {{) for templates is pretty standard so somethi
 For your security, not all HTML tags are allowed - we've limited this to any that are for the purposed of text formatting (inc. bullet points) and tables.
 
 The full list of allowed tags are: <a>, <b>, <big>, <blockquote>, <br>, <caption>, <center>, <cite>, <code>, <col>, <colgroup>, <div>,  <em>, <font>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <hr>, <i>, <img>, <li>, <ol>, <p>, <pre>, <q>, <s>, <small>, <span>, <strike>, <strong>, <style>, <sub>, <sup>, <table>, <td>, <th>, <tr>, <u> and <ul>.
+
+= Do you support this plugin on forks of WordPress? =
+
+No. It was developed for WordPress and so forks remain unsupported. I have no intention of developing and testing this on any other version.
 
 == Screenshots ==
 
